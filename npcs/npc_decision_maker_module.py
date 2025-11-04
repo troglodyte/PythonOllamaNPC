@@ -172,3 +172,14 @@ Keep the response concise and in-character. Format your response as JSON with th
             yield f"Error: {str(e)}"
 
 
+if __name__ == "__main__":
+    from pprint import pprint
+
+    npc_dm = NPCDecisionMaker()
+    npc_response = npc_dm.get_npc_response(
+        npc_name="Test NPC",
+        npc_personality="Test personality",
+        situation="Test situation",
+        player_action="Test action"
+    )
+    pprint(npc_response)
