@@ -1,4 +1,1 @@
-.idea*
-ignore*
-*/__pycache__/*
-DEV_NOTES
+.DS_Store
