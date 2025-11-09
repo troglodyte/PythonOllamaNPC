@@ -18,7 +18,7 @@ def main_loop():
             print(f'Goodbye {prompt}')
             break
         if prompt == 'help':
-            print('Type quit to exit the program')
+            print('Type quit to exit the program\nType debug to toggle debug mode\nType anything else to talk to Bob the bartender')
             continue
         if prompt == 'debug':
             debug_mode = not debug_mode
