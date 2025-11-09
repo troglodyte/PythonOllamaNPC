@@ -1,10 +1,16 @@
 import requests
 import json
 from typing import Dict, List, Optional
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
+OLLAMA_URL: str = os.getenv('OLLAMA_URL')
+MODEL: str = os.getenv('OLLAMA_MODEL')
+EMB_MODEL: str = os.getenv('EMB_MODEL')
 
 class NPCDecisionMaker:
-    def __init__(self, ollama_url: str = "http://localhost:11434", model: str = "llama2"):
+    def __init__(self, ollama_url: str = OLLAMA_URL, model: str = MODEL):
         self.ollama_url = ollama_url
         self.model = model
         self.api_endpoint = f"{ollama_url}/api/generate"

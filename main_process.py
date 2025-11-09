@@ -11,6 +11,7 @@ import json
 def main_loop():
     npc: NPCDecisionMaker = NPCDecisionMaker(ollama_url=llm_url, model=llm_model)
     debug_mode: bool = False
+    rolling_conntext = []
     while True:
         prompt: str = input('> ')
         if prompt == 'quit':
@@ -27,10 +28,14 @@ def main_loop():
                 npc_name='Bob the bartender',
                 npc_personality=random.choice(['wary', 'cautious', 'inebriated', 'happy', 'buys', 'sad', 'bored', 'spiteful', 'rushed']),
                 situation=prompt,
+                context=json.dumps(rolling_conntext, ensure_ascii=False, indent=2),
                 player_action='talk'
             )
 
-            print(f'With {response["emotion"]} the bartender says: {response["dialogue"]}')
+            rolling_conntext.append({"previous_response": response["dialogue"]})
+            rolling_conntext.append({"previous_prompt": prompt})
+
+            print(f'({response["emotion"]}), The bartender says: {response["dialogue"]}')
             if debug_mode:
                 print(f'Input: {prompt}')
                 print(json.dumps(response, indent=2))
