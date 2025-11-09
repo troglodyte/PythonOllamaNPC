@@ -4,18 +4,7 @@ from typing import Dict, List, Optional
 
 
 class NPCDecisionMaker:
-    """
-    A class to interact with Ollama for generating NPC responses in a tabletop RPG.
-    """
-    
     def __init__(self, ollama_url: str = "http://localhost:11434", model: str = "llama2"):
-        """
-        Initialize the NPC Decision Maker.
-        
-        Args:
-            ollama_url: The URL where Ollama is running (default: localhost:11434)
-            model: The model to use (default: llama2)
-        """
         self.ollama_url = ollama_url
         self.model = model
         self.api_endpoint = f"{ollama_url}/api/generate"
@@ -28,22 +17,6 @@ class NPCDecisionMaker:
         player_action: str,
         context: Optional[str] = None
     ) -> str:
-        """
-        Create a structured prompt for the LLM to generate NPC response.
-        
-        Args:
-            npc_name: Name of the NPC
-            npc_personality: Description of NPC's personality and background
-            situation: Current situation/scene
-            player_action: What the player just did or said
-            context: Optional additional context
-        
-        Returns:
-            Formatted prompt string
-
-
-        - ~ ^
-        """
         prompt = f"""You are a Dungeon Master assistant for a tabletop RPG game.
 
 NPC Information:
@@ -104,8 +77,10 @@ Keep the response concise and in-character. Format your response as JSON with th
         payload = {
             "model": self.model,
             "prompt": prompt,
+            "temperature": temperature,
+            "format": "json",
             "stream": False,
-            "temperature": temperature
+            "response-type": "Only respond in valid JSON format.",
         }
         
         try:
@@ -115,12 +90,10 @@ Keep the response concise and in-character. Format your response as JSON with th
             result = response.json()
             llm_response = result.get("response", "")
             
-            # Try to parse as JSON if possible
             try:
                 parsed_response = json.loads(llm_response)
                 return parsed_response
             except json.JSONDecodeError:
-                # If not JSON, return as text
                 return {
                     "raw_response": llm_response,
                     "dialogue": llm_response,
@@ -128,6 +101,7 @@ Keep the response concise and in-character. Format your response as JSON with th
                 }
         
         except requests.exceptions.RequestException as e:
+            print(f"Error: {str(e)}")
             return {
                 "error": str(e),
                 "message": "Failed to connect to Ollama. Make sure it's running."

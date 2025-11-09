@@ -1,11 +1,12 @@
 services:
   ollama:
+    environment:
+      - OLLAMA_DEBUG=1
     image: ollama/ollama:latest
     ports:
       - "11434:11434"
     volumes:
       - ollama:/root/.ollama
-    command: sh -c "ollama serve & sleep 5 && ollama pull llama2"
     networks:
       - app-network
 
