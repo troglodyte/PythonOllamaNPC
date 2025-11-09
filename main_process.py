@@ -35,10 +35,16 @@ def main_loop():
             rolling_conntext.append({"previous_response": response["dialogue"]})
             rolling_conntext.append({"previous_prompt": prompt})
 
-            print(f'({response["emotion"]}), The bartender says: {response["dialogue"]}')
+            # todo sometimes emotion is empty and causes an error
+            if response['emotion']:
+                emotion = f'{response["emotion"]}'
+            else:
+                emotion = 'neutral'
+            print(f'({emotion}), The bartender says: {response["dialogue"]}')
             if debug_mode:
                 print(f'Input: {prompt}')
                 print(json.dumps(response, indent=2))
+                print(json.dumps(rolling_conntext, indent=2))
 
 
 if __name__ == "__main__":
